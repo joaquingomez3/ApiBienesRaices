@@ -1,0 +1,21 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System;
+
+public class Alquiler
+{
+    [Key]
+    public int idAlquiler { get; set; }
+    public double precio { get; set; }
+    public DateTime fecha_inicio { get; set; }
+    public DateTime fechaFin { get; set; }
+
+    // Foreign Keys
+    public int idInquilino { get; set; }
+    [ForeignKey(nameof(idInquilino))]
+    public Inquilinos? Inquilino { get; set; }
+
+    public int idInmueble { get; set; }
+    [ForeignKey(nameof(idInmueble))]
+    public Inmuebles? Inmueble { get; set; }
+}
