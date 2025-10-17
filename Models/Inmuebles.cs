@@ -11,6 +11,7 @@ public class Inmuebles
     public string uso { get; set; }
     public double precio { get; set; }
     public bool disponible { get; set; }
+    public string? imagen { get; set; }
 
     // Foreign Key
     public int idPropietario { get; set; }

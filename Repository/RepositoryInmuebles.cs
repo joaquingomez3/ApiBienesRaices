@@ -3,6 +3,7 @@ using System.Linq;
 using ApiBienesRaices.Data;
 
 using ApiBienesRaices.Repository.IRepository;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApiBienesRaices.Repository
 {
@@ -15,46 +16,43 @@ namespace ApiBienesRaices.Repository
             this.contexto = contexto;
         }
 
-        public List<Inmuebles> ObtenerPorPropietario(int idPropietario)
+        public IEnumerable<Inmuebles> ObtenerTodosPorPropietario(int idPropietario)
         {
             return contexto.Inmuebles
+                .Include(i => i.Propietario)
                 .Where(i => i.idPropietario == idPropietario)
                 .ToList();
         }
 
-        public List<Inmuebles> ObtenerConContratoVigente(int idPropietario)
-        {
-            return contexto.Inmuebles
-                .Where(i => i.idPropietario == idPropietario && i.disponible == false)
-                .ToList();
-        }
+        // public IEnumerable<Inmuebles> ObtenerConContratoVigente(int idPropietario)
+        // {
+        //     var hoy = DateTime.Now.Date;
+        //     return contexto.Inmuebles
+        //         .Include(i => i.disponible)
+        //         .Where(i => i.idPropietario == idPropietario &&
+        //                     i..Any(c => c.FechaInicio <= hoy && c.FechaFin >= hoy))
+        //         .ToList();
+        // }
 
         public Inmuebles ObtenerPorId(int id)
         {
-            return contexto.Inmuebles.FirstOrDefault(i => i.idInmueble == id);
+            return contexto.Inmuebles
+                .Include(i => i.Propietario)
+                .FirstOrDefault(i => i.idInmueble == id);
         }
 
-        public int Alta(Inmuebles inmueble)
+        public Inmuebles Agregar(Inmuebles inmueble)
         {
             contexto.Inmuebles.Add(inmueble);
-            return contexto.SaveChanges();
+            contexto.SaveChanges();
+            return inmueble;
         }
 
-        public int Actualizar(Inmuebles inmueble)
+        public Inmuebles Actualizar(Inmuebles inmueble)
         {
             contexto.Inmuebles.Update(inmueble);
-            return contexto.SaveChanges();
-        }
-
-        public int Eliminar(int id)
-        {
-            var inmueble = ObtenerPorId(id);
-            if (inmueble != null)
-            {
-                contexto.Inmuebles.Remove(inmueble);
-                return contexto.SaveChanges();
-            }
-            return 0;
+            contexto.SaveChanges();
+            return inmueble;
         }
     }
 }

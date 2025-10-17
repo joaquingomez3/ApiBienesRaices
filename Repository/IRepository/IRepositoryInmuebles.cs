@@ -5,11 +5,10 @@ namespace ApiBienesRaices.Repository.IRepository
 {
     public interface IRepositoryInmuebles
     {
-        List<Inmuebles> ObtenerPorPropietario(int idPropietario);
-        List<Inmuebles> ObtenerConContratoVigente(int idPropietario);
+        IEnumerable<Inmuebles> ObtenerTodosPorPropietario(int idPropietario);
+        //IEnumerable<Inmuebles> ObtenerConContratoVigente(int idPropietario);
         Inmuebles ObtenerPorId(int id);
-        int Alta(Inmuebles inmueble);
-        int Actualizar(Inmuebles inmueble);
-        int Eliminar(int id);
+        Inmuebles Agregar(Inmuebles inmueble);
+        Inmuebles Actualizar(Inmuebles inmueble);
     }
 }
