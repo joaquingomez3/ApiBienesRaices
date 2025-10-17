@@ -24,15 +24,16 @@ namespace ApiBienesRaices.Repository
                 .ToList();
         }
 
-        // public IEnumerable<Inmuebles> ObtenerConContratoVigente(int idPropietario)
-        // {
-        //     var hoy = DateTime.Now.Date;
-        //     return contexto.Inmuebles
-        //         .Include(i => i.disponible)
-        //         .Where(i => i.idPropietario == idPropietario &&
-        //                     i..Any(c => c.FechaInicio <= hoy && c.FechaFin >= hoy))
-        //         .ToList();
-        // }
+        public IEnumerable<Inmuebles> ObtenerConContratoVigente(int idPropietario)
+        {
+            var hoy = DateTime.Now;
+            var inmuebles = contexto.Inmuebles //representa la tabla Inmuebles
+                .Include(i => i.Alquileres)//incluye los alquileres relacionados con el inmueble
+                .Where(i => i.idPropietario == idPropietario //filtro por propietario
+                    && i.Alquileres.Any(a => a.fecha_inicio <= hoy && a.fechaFin >= hoy))//filtro por contrato vigente dentro del rango de fechas
+                .ToList();
+            return inmuebles;
+        }
 
         public Inmuebles ObtenerPorId(int id)
         {

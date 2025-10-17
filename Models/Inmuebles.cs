@@ -17,4 +17,7 @@ public class Inmuebles
     public int idPropietario { get; set; }
     [ForeignKey(nameof(idPropietario))]
     public Propietarios? Propietario { get; set; }
+
+    // Relación con alquiler
+    public ICollection<Alquiler>? Alquileres { get; set; }
 }

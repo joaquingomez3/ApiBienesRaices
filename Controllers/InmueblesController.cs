@@ -49,21 +49,24 @@ namespace ApiBienesRaices.Controllers
             }
         }
 
-        // GET: /api/Inmuebles/GetContratoVigente
-        // [HttpGet("GetContratoVigente")]
-        // public IActionResult ObtenerConContratoVigente()
-        // {
-        //     try
-        //     {
-        //         int idPropietario = ObtenerIdPropietarioDesdeToken();
-        //         var lista = repoInmuebles.ObtenerConContratoVigente(idPropietario);
-        //         return Ok(lista);
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         return BadRequest(ex.Message);
-        //     }
-        // }
+        //GET: /api/Inmuebles/GetContratoVigente
+        [HttpGet("GetContratoVigente")]
+        public IActionResult ObtenerConContratoVigente()
+        {
+            try
+            {
+                var idPropClaim = User.Claims.FirstOrDefault(c => c.Type == "Id");
+                if (idPropClaim == null)
+                    return Unauthorized("Token inválido o no proporcionado");
+                int idPropietario = int.Parse(idPropClaim.Value);
+                var lista = repoInmuebles.ObtenerConContratoVigente(idPropietario);
+                return Ok(lista);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         // POST: /api/Inmuebles/cargar
         [HttpPost("cargar")]
