@@ -3,6 +3,7 @@ using System.Linq;
 using ApiBienesRaices.Data;
 
 using ApiBienesRaices.Repository.IRepository;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApiBienesRaices.Repository
 {
@@ -15,34 +16,20 @@ namespace ApiBienesRaices.Repository
             this.contexto = contexto;
         }
 
-        public List<Pagos> ObtenerPorContrato(int idAlquiler)
+        public async Task<List<Pagos>> ObtenerPorContrato(int idAlquiler)
         {
-            return contexto.Pagos
-                .Where(p => p.idAlquiler == idAlquiler)
-                .ToList();
+            // Implementación del endpoint: Obtener Pagos por Contrato
+            // Devuelve una lista de todos los pagos de un alquiler específico.
+            // Filtra la tabla Pagos usando el IdAlquiler (Id del Contrato).
+            // .OrderBy() es opcional, pero ayuda a presentar los pagos en orden cronológico.
+            return await contexto.Pagos
+                                 .Where(p => p.idAlquiler == idAlquiler)
+                                 .OrderBy(p => p.nroPago)
+                                 .ThenBy(p => p.fecha)
+                                 .ToListAsync();
+
         }
 
-        public int Alta(Pagos pago)
-        {
-            contexto.Pagos.Add(pago);
-            return contexto.SaveChanges();
-        }
 
-        public int Actualizar(Pagos pago)
-        {
-            contexto.Pagos.Update(pago);
-            return contexto.SaveChanges();
-        }
-
-        public int Eliminar(int id)
-        {
-            var pago = contexto.Pagos.FirstOrDefault(p => p.idPago == id);
-            if (pago != null)
-            {
-                contexto.Pagos.Remove(pago);
-                return contexto.SaveChanges();
-            }
-            return 0;
-        }
     }
 }

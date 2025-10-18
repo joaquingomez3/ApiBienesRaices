@@ -2,6 +2,7 @@ using System.Linq;
 using ApiBienesRaices.Data;
 
 using ApiBienesRaices.Repository.IRepository;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApiBienesRaices.Repository
 {
@@ -14,33 +15,14 @@ namespace ApiBienesRaices.Repository
             this.contexto = contexto;
         }
 
-        public Alquiler ObtenerPorInmueble(int idInmueble)
+        public async Task<Alquiler> ObtenerPorInmueble(int idInmueble)
         {
-            return contexto.Alquiler
-                .FirstOrDefault(a => a.idInmueble == idInmueble); // revisar
-        }
 
-        public int Alta(Alquiler alquiler)
-        {
-            contexto.Alquiler.Add(alquiler);
-            return contexto.SaveChanges();
-        }
+            return await contexto.Alquiler
+                                  .Include(a => a.Inquilino)
+                                  .Include(a => a.Inmueble)
+                                  .FirstOrDefaultAsync(a => a.idInmueble == idInmueble);
 
-        public int Actualizar(Alquiler alquiler)
-        {
-            contexto.Alquiler.Update(alquiler);
-            return contexto.SaveChanges();
-        }
-
-        public int Eliminar(int id)
-        {
-            var contrato = contexto.Alquiler.FirstOrDefault(a => a.idAlquiler == id);
-            if (contrato != null)
-            {
-                contexto.Alquiler.Remove(contrato);
-                return contexto.SaveChanges();
-            }
-            return 0;
         }
     }
 }

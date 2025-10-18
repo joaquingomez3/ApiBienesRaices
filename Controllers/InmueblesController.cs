@@ -14,6 +14,7 @@ namespace ApiBienesRaices.Controllers
     // Define la ruta base del controlador: /api/Propietarios
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class InmueblesController : ControllerBase
     {
         // Dependencias inyectadas

@@ -20,4 +20,5 @@ public class Alquiler
     [JsonIgnore]
     [ForeignKey(nameof(idInmueble))]
     public Inmuebles? Inmueble { get; set; }
+    public ICollection<Pagos> pagos { get; set; } // Colección de pagos asociados
 }
