@@ -84,6 +84,7 @@ namespace ApiBienesRaices.Controllers
 
                 if (imagen != null && imagen.Length > 0)
                 {
+
                     string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
                     if (!Directory.Exists(uploadsFolder))
                         Directory.CreateDirectory(uploadsFolder);
@@ -91,12 +92,23 @@ namespace ApiBienesRaices.Controllers
                     string fileName = Guid.NewGuid().ToString() + Path.GetExtension(imagen.FileName);
                     string filePath = Path.Combine(uploadsFolder, fileName);
 
-                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    FileInfo fileInfo = new FileInfo(filePath);
+                    if (fileInfo.Exists)
                     {
-                        imagen.CopyTo(stream);
+                        fileInfo.Delete();
                     }
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        imagen.CopyTo(fileStream);
+                    }
+                    var baseUrl = $"{Request.Scheme}://{Request.Host.Value}{Request.PathBase.Value}";
 
-                    inmuebleData.imagen = "/uploads/" + fileName;
+                    inmuebleData.imagen = $"{baseUrl}/uploads/{fileName}";
+                    inmuebleData.imagenLocal = filePath;
+                }
+                else
+                {
+                    inmuebleData.imagen = "https://placehold.co/600x400";
                 }
 
                 var nuevo = repoInmuebles.Agregar(inmuebleData);
@@ -108,19 +120,26 @@ namespace ApiBienesRaices.Controllers
             }
         }
 
+
         // PUT: /api/Inmuebles/actualizar
         [HttpPut("actualizar")]
-        public IActionResult Actualizar([FromBody] Inmuebles inmueble)
+        public IActionResult Actualizar([FromBody] Inmuebles inmuebleData)
         {
             try
             {
                 var idPropClaim = User.Claims.FirstOrDefault(c => c.Type == "Id");
                 if (idPropClaim == null)
                     return Unauthorized("Token inválido o no proporcionado");
-                int idPropietario = int.Parse(idPropClaim.Value);
-                inmueble.idPropietario = idPropietario;
 
-                var actualizado = repoInmuebles.Actualizar(inmueble);
+                int idPropietario = int.Parse(idPropClaim.Value);
+                int idPropietarioActual = repoInmuebles.ObtenerPropietarioInmueble(inmuebleData.idInmueble);
+
+                if (idPropietario != idPropietarioActual)
+                    return Unauthorized("No tiene permiso para actualizar este inmueble.");
+
+                inmuebleData.idPropietario = idPropietarioActual;
+
+                var actualizado = repoInmuebles.Actualizar(inmuebleData);
                 return Ok(actualizado);
             }
             catch (Exception ex)
@@ -129,9 +148,8 @@ namespace ApiBienesRaices.Controllers
             }
         }
 
-
-
     }
+
 
 
 

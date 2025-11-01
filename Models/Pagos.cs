@@ -8,7 +8,7 @@ public class Pagos
     public int idPago { get; set; }
     public int nroPago { get; set; }
     public DateTime fecha { get; set; }
-    public double importe { get; set; }
+    public decimal importe { get; set; }
 
     // Foreign Key
     public int idAlquiler { get; set; }

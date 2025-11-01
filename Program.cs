@@ -71,6 +71,9 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+// Habilita servir archivos estáticos desde wwwroot
+app.UseStaticFiles();
+
 // Redirige automáticamente todas las solicitudes HTTP a HTTPS
 app.UseHttpsRedirection();
 

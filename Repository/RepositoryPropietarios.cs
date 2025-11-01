@@ -1,6 +1,8 @@
 using System;
 using ApiBienesRaices.Data;
 using ApiBienesRaices.Repository.IRepository;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApiBienesRaices.Repository;
 
@@ -51,6 +53,28 @@ public class RepositoryPropietarios : IRepositoryPropietarios
             return contexto.SaveChanges();
         }
         return 0;
+    }
+
+    public async Task<bool> ChangePasswordAsync(string email, string currentPassword, string newPassword)
+    {
+        var _passwordHasher = new PasswordHasher<Propietarios>();
+        // Buscar propietario autenticado
+        var propietario = await contexto.Propietarios.FirstOrDefaultAsync(p => p.mail == email);
+        if (propietario == null)
+            return false;
+
+        // Verificar contraseña actual
+        var verificationResult = _passwordHasher.VerifyHashedPassword(propietario, propietario.password, currentPassword);
+        if (verificationResult == PasswordVerificationResult.Failed)
+            return false;
+
+        // Hashear nueva contraseña
+        propietario.password = _passwordHasher.HashPassword(propietario, newPassword);
+
+        // Guardar cambios
+        await contexto.SaveChangesAsync();
+
+        return true;
     }
 
 }

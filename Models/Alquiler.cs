@@ -7,7 +7,7 @@ public class Alquiler
 {
     [Key]
     public int idAlquiler { get; set; }
-    public double precio { get; set; }
+    public decimal precio { get; set; }
     public DateTime fecha_inicio { get; set; }
     public DateTime fechaFin { get; set; }
 

@@ -9,13 +9,20 @@ public class Inmuebles
     public int ambientes { get; set; }
     public string tipo { get; set; }
     public string uso { get; set; }
-    public double precio { get; set; }
+    public decimal precio { get; set; }
+    public int superficie { get; set; }
+    public decimal latitud { get; set; }
+    public decimal longitud { get; set; }
     public bool disponible { get; set; }
     public string? imagen { get; set; }
+
+    [NotMapped]
+    public string? imagenLocal { get; set; }
 
     // Foreign Key
     public int idPropietario { get; set; }
     [ForeignKey(nameof(idPropietario))]
+
     public Propietarios? Propietario { get; set; }
 
     // Relación con alquiler

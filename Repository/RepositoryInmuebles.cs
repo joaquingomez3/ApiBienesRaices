@@ -55,5 +55,20 @@ namespace ApiBienesRaices.Repository
             contexto.SaveChanges();
             return inmueble;
         }
+
+        public int ObtenerPropietarioInmueble(int idInmueble)
+        {
+            var inmueble = contexto.Inmuebles
+                           .AsNoTracking()
+                           .Select(i => new { i.idInmueble, i.idPropietario }) // Opcional: solo seleccionar los campos necesarios
+                           .FirstOrDefault(i => i.idInmueble == idInmueble);
+
+            if (inmueble == null)
+            {
+                throw new InvalidOperationException($"Inmueble con ID {idInmueble} no encontrado.");
+            }
+
+            return inmueble.idPropietario;
+        }
     }
 }

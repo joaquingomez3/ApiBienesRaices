@@ -7,6 +7,7 @@ namespace ApiBienesRaices.Repository.IRepository
     {
         IEnumerable<Inmuebles> ObtenerTodosPorPropietario(int idPropietario);
         IEnumerable<Inmuebles> ObtenerConContratoVigente(int idPropietario);
+        int ObtenerPropietarioInmueble(int idInmueble);
         Inmuebles ObtenerPorId(int id);
         Inmuebles Agregar(Inmuebles inmueble);
         Inmuebles Actualizar(Inmuebles inmueble);

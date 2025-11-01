@@ -41,9 +41,10 @@ namespace ApiBienesRaices.Controllers
 
             // Hashea y compara la contraseña ingresada con la almacenada
             var hash = new PasswordHasher<Propietarios>();
+
             var res = hash.VerifyHashedPassword(propietario, propietario.password, clave);
 
-            Console.WriteLine(propietario);
+
 
             // Si el usuario no existe o la contraseña no coincide, devuelve error 400
             if (propietario == null || res == PasswordVerificationResult.Failed)
@@ -122,6 +123,30 @@ namespace ApiBienesRaices.Controllers
 
             // Devuelve el objeto actualizado
             return Ok(original);
+        }
+
+        [HttpPut("changePassword")]
+        public async Task<IActionResult> ChangePassword([FromForm] string currentPassword, [FromForm] string newPassword)
+        {
+            try
+            {
+                // Obtener email desde el token
+                var email = User.FindFirstValue(ClaimTypes.Name);
+                if (email == null)
+                    return Unauthorized("Token inválido o expirado.");
+
+                // Llamar al repositorio
+                var result = await repoPropietarios.ChangePasswordAsync(email, currentPassword, newPassword);
+
+                if (!result)
+                    return BadRequest("La contraseña actual es incorrecta o el usuario no existe.");
+
+                return NoContent(); // 204 OK sin cuerpo
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }
         }
     }
 }
